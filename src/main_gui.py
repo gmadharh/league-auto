@@ -2,6 +2,9 @@ from tkinter import *
 import pyautogui
 import time
 
+accept_button = None
+queue_label = None
+chat_box = None
 running = False
 
 class LeagueGui:
@@ -40,68 +43,99 @@ class LeagueGui:
 		else:
 			return 10
 
-	def start_script(self):
+	def check_in_queue(self):
 
-		# accept queue button
-		accept_button = None
-
-		# 'in queue' label
-		queue_label = None
+		global queue_label
+		global running
 
 		# keep searching for the 'in queue label' to know that the user is in queue
-		while queue_label is None:
+		if queue_label is None and running:
 
 			print('not in queue')
-
 			try:
 				queue_label = pyautogui.locateOnScreen('../res/queue.png',confidence=0.8)
 			except:
 				pass
 
+		self.master.after(1000,self.check_in_queue)
+
+	def in_queue(self):
+
+		global queue_label
+		global running
+
 		# while queue label is present
 		# meaning we are not in champ select yet
-		while queue_label is not None:
+		if queue_label is not None and running:
 
 			print('in queue')
 
 			queue_label = pyautogui.locateOnScreen('../res/queue.png',confidence=0.8)
-	
+
+		self.master.after(1000,self.in_queue)
+
+	def accept_queue(self):
+
+		global accept_button
+
 		# keep searching for accept button
-		while accept_button is None:
+		if accept_button is None:
 			print('searching for accept button')
 			try:
 				accept_button = pyautogui.locateOnScreen('../res/accept-queue.png',confidence=0.8)
 			except:
 				pass
+		else:	
+			print('found accept_button')
+			# get the location of the accept button
+			accept_location = pyautogui.center(accept_button)
 
-		print('found accept_button')
-		# get the location of the accept button
-		accept_location = pyautogui.center(accept_button)
+			print('clicking it')
+			# click it
+			pyautogui.click(accept_location)
 
-		print('clicking it')
-		# click it
-		pyautogui.click(accept_location)
+		self.master.after(1000,self.accept_queue)
 
-		chat_box = None
+	def champ_role(self):
 
-		while chat_box is None:
+		global chat_box
+
+		if chat_box is None:
+
 			print('searching for chat bot')
-		try:
-			chat_box = pyautogui.locateOnScreen('../res/chat-box.png',confidence=0.8)
-		except:
-			pass
 
-		print('found it')
-		chat_location = pyautogui.center(chat_box)
+			try:
+				chat_box = pyautogui.locateOnScreen('../res/chat-box.png',confidence=0.8)
+			except:
+				pass
 
-		print('clicking chat')
-		pyautogui.click(chat_location)
+		else:	
+			print('found it')
+			chat_location = pyautogui.center(chat_box)
 
-		print('spamming role' )
+			print('clicking chat')
+			pyautogui.click(chat_location)
 
-		for i in range(self.num_input()):
-			pyautogui.write('top')
-			pyautogui.press('enter')
+			print('spamming role' )
+
+			for i in range(self.num_input()):
+				pyautogui.write('top')
+				pyautogui.press('enter')
+
+		self.master.after(1000,self.champ_role)
+
+
+	def start_script(self):
+
+		global running
+		running = True
+		self.check_in_queue()
+		self.in_queue()
+		self.accept_queue()
+		self.champ_role()
+
+
+
 
 
 

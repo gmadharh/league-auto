@@ -1,7 +1,3 @@
-import pyautogui
-import time
-from tkinter import *
-
 # accept queue button
 accept_button = None
 

@@ -43,9 +43,12 @@ class LeagueGui:
 		else:
 			return 10
 
-	def check_in_queue(self):
+
+	def whole_script(self):
 
 		global queue_label
+		global accept_button
+		global chat_box
 		global running
 
 		# keep searching for the 'in queue label' to know that the user is in queue
@@ -56,93 +59,61 @@ class LeagueGui:
 				queue_label = pyautogui.locateOnScreen('../res/queue.png',confidence=0.8)
 			except:
 				pass
-
-			self.master.after(1000,self.check_in_queue)
 		else:
-			self.in_queue()
+			# while queue label is present
+			# meaning we are not in champ select yet
+			if queue_label is not None and accept_button is None and running:
 
+				print('in queue')
 
-		
-
-	def in_queue(self):
-
-		global queue_label
-		global running
-
-		# while queue label is present
-		# meaning we are not in champ select yet
-		if queue_label is not None and running:
-
-			print('in queue')
-
-			queue_label = pyautogui.locateOnScreen('../res/queue.png',confidence=0.8)
-			self.master.after(1000,self.in_queue)
-
-		
-		self.accept_queue()
-
-		
-
-	def accept_queue(self):
-
-		global accept_button
-
-		# keep searching for accept button
-		if accept_button is None and running:
-			print('searching for accept button')
-			try:
 				accept_button = pyautogui.locateOnScreen('../res/accept-queue.png',confidence=0.8)
-			except:
-				pass
+				queue_label = pyautogui.locateOnScreen('../res/queue.png',confidence=0.8)
 
-			self.master.after(1000,self.accept_queue)
+			else:
 
-		else:	
-			print('found accept_button')
-			# get the location of the accept button
-			accept_location = pyautogui.center(accept_button)
+				# keep searching for accept button
+				if accept_button is None and running:
+					print('searching for accept button')
+					try:
+						accept_button = pyautogui.locateOnScreen('../res/accept-queue.png',confidence=0.8)
+					except:
+						pass
 
-			print('clicking it')
-			# click it
-			pyautogui.click(accept_location)
+				else:	
+					print('found accept_button')
+					# get the location of the accept button
+					accept_location = pyautogui.center(accept_button)
 
-			self.champ_role()
+					print('clicking it')
+					# click it
+					pyautogui.click(accept_location)
 
-		
+					if chat_box is None and running:
 
-		
+						print('searching for chat bot')
 
-	def champ_role(self):
+						try:
+							chat_box = pyautogui.locateOnScreen('../res/chat-box.png',confidence=0.8)
+						except:
+							pass
 
-		global chat_box
+					else:	
+						print('found it')
+						chat_location = pyautogui.center(chat_box)
 
-		if chat_box is None and running:
+						print('clicking chat')
+						pyautogui.click(chat_location)
 
-			print('searching for chat bot')
+						print('spamming role' )
 
-			try:
-				chat_box = pyautogui.locateOnScreen('../res/chat-box.png',confidence=0.8)
-			except:
-				pass
+						for i in range(self.num_input()):
+							pyautogui.write(self.role_entry.get())
+							pyautogui.press('enter')
+							
+						return None
 
-			self.master.after(1000,self.champ_role)
 
-		else:	
-			print('found it')
-			chat_location = pyautogui.center(chat_box)
-
-			print('clicking chat')
-			pyautogui.click(chat_location)
-
-			print('spamming role' )
-
-			for i in range(self.num_input()):
-				pyautogui.write(self.role_entry.get())
-				pyautogui.press('enter')
-
-		
-
-		
+		self.master.after(1000,self.whole_script)
 
 
 	def start_script(self):
@@ -150,7 +121,7 @@ class LeagueGui:
 		global running
 		running = True
 
-		self.check_in_queue()
+		self.whole_script()
 		
 
 	def stop_script(self):

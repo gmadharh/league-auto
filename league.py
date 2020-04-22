@@ -21,7 +21,6 @@ while True:
 			queue_label = pyautogui.locateOnScreen('./res/queue.png',confidence=0.8)
 		except:
 			pass
-		print(queue_label)
 
 	# while queue label is present
 	# meaning we are not in champ select yet
@@ -35,8 +34,6 @@ while True:
 				accept_button = pyautogui.locateOnScreen('./res/accept-queue.png',confidence=0.8)
 			except:
 				pass
-
-		print(accept_button)
 
 		# get the location of the accept button
 		accept_location = pyautogui.center(accept_button)
@@ -54,7 +51,6 @@ while True:
 		except:
 			pass
 
-	print(chat_box)
 
 	# get the location of the chat box
 	chat_location = pyautogui.center(chat_box)

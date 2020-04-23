@@ -5,4 +5,4 @@ To run the script, download the repo and run the .exe named `league-auto`. Keep 
 
 Upon running the executable, a prompt like this should show up.
 
-![alt text](./img/Capture.png "Logo Title Text 1")
+![Capture](https://user-images.githubusercontent.com/58638508/80108753-a88b5880-854a-11ea-9fb3-f9e20a73cb51.PNG)
